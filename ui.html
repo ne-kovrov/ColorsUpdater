@@ -355,7 +355,9 @@
         console.log('Кнопка "Собрать каталог" нажата');
         err.textContent = 'Собираем каталог...';
         err.className = 'info';
+        console.log('Отправляем сообщение в плагин:', { type: 'collect-catalog' });
         parent.postMessage({ pluginMessage: { type: 'collect-catalog' } }, '*');
+        console.log('Сообщение отправлено');
       };
       $('copy').onclick = () => {
         const catalogText = catalog.value;
