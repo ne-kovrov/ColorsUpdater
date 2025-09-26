@@ -4,8 +4,10 @@ type ReportItem = { kind: 'warn' | 'error'; nodeName?: string; nodeId?: string; 
 type MapRow = { styleName: string; variableName: string; collectionName?: string }
 type CatalogRow = { name: string; key?: string; id?: string; collectionName?: string; type?: string }
 figma.showUI(__html__, { width: 560, height: 560 })
+console.log('Плагин инициализирован, UI загружен')
 figma.ui.onmessage = async (msg: any) => {
   console.log('Плагин получил сообщение:', msg)
+  console.log('Тип сообщения:', msg.type)
   if (msg.type === 'cancel') {
     figma.closePlugin()
     return
