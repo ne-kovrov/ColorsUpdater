@@ -15,7 +15,6 @@
           <button id="copy">Копировать</button>
           <button id="clear">Очистить</button>
           <button id="collect">Собрать каталог из этого файла</button>
-          <button id="test" onclick="console.log('Тестовая кнопка нажата!')">Тест</button>
         </div>
         <textarea id="catalog" placeholder="name,key,id,collection&#10;Color/Primary/500,Var:abc...,1:123,Tokens" style="width:100%;height:180px;"></textarea>
       </details>
@@ -296,90 +295,60 @@
       }
     </style>
     <script>
-      console.log('=== [UI] Скрипт загружен ===');
-      const $ = (id) => {
-        const element = document.getElementById(id);
-        console.log(`[UI] Поиск элемента с id="${id}":`, element);
-        return element;
-      };
+      const $ = (id) => document.getElementById(id);
       const mapping = $('mapping');
       const catalog = $('catalog');
       const err = $('err');
       const loader = $('loader');
       const runBtn = $('run');
       const catalogAccordion = $('catalog-accordion');
-      
-      console.log('=== [UI] Элементы найдены ===');
-      console.log('[UI] mapping:', mapping);
-      console.log('[UI] catalog:', catalog);
-      console.log('[UI] err:', err);
-      console.log('[UI] loader:', loader);
-      console.log('[UI] runBtn:', runBtn);
-      console.log('[UI] catalogAccordion:', catalogAccordion);
-      
-      // Проверяем кнопку collect
       const collectBtn = $('collect');
-      console.log('[UI] collectBtn:', collectBtn);
       
-      console.log('[UI] Начинаем инициализацию аккордеона...');
       // Управление состоянием аккордеона
       function initAccordionState() {
         try {
-          console.log('[UI] initAccordionState вызвана');
           // Проверяем, есть ли сохраненное состояние
           const savedState = localStorage.getItem('catalog-accordion-open');
-          console.log('[UI] savedState:', savedState);
           
           if (savedState === null) {
             // Первый запуск - открываем аккордеон
-            console.log('[UI] Первый запуск - открываем аккордеон');
             catalogAccordion.open = true;
           } else {
             // Восстанавливаем сохраненное состояние
-            console.log('[UI] Восстанавливаем состояние:', savedState);
             catalogAccordion.open = savedState === 'true';
           }
-          console.log('[UI] initAccordionState завершена успешно');
         } catch (error) {
           console.error('[UI] Ошибка в initAccordionState:', error);
         }
       }
       
       function saveAccordionState() {
-        console.log('[UI] saveAccordionState вызвана');
         localStorage.setItem('catalog-accordion-open', catalogAccordion.open.toString());
       }
       
-      console.log('[UI] Инициализируем состояние аккордеона...');
       // Инициализируем состояние аккордеона
       try {
         initAccordionState();
-        console.log('[UI] initAccordionState выполнена');
       } catch (error) {
         console.error('[UI] Ошибка при выполнении initAccordionState:', error);
       }
       
-      console.log('[UI] Добавляем обработчик события toggle...');
       // Сохраняем состояние при изменении
       try {
         catalogAccordion.addEventListener('toggle', saveAccordionState);
-        console.log('[UI] Обработчик toggle добавлен');
       } catch (error) {
         console.error('[UI] Ошибка при добавлении обработчика toggle:', error);
       }
       
-      console.log('[UI] Определяем функцию hideLoader...');
       // Функция для скрытия лоадера
       function hideLoader() {
-        console.log('[UI] hideLoader вызвана');
         loader.style.display = 'none';
         runBtn.disabled = false;
         runBtn.textContent = 'Запустить';
       }
       
-      console.log('[UI] Устанавливаем обработчики кнопок...');
+      // Устанавливаем обработчики кнопок
       try {
-        console.log('[UI] Устанавливаем обработчик для кнопки run...');
         $('run').onclick = () => {
         err.textContent = '';
         const csv = mapping.value || '';
@@ -397,24 +366,16 @@
         
         parent.postMessage({ pluginMessage: { type: 'run', mappingCsv: csv, catalogCsvOrJson: cat } }, '*');
       };
-      console.log('[UI] Устанавливаем обработчик для кнопки cancel...');
       $('cancel').onclick = () => parent.postMessage({ pluginMessage: { type: 'cancel' } }, '*');
-        console.log('[UI] Устанавливаем обработчик для кнопки collect...');
-        if (collectBtn) {
-          collectBtn.onclick = () => {
-            console.log('=== [UI] Кнопка "Собрать каталог" нажата ===');
-            err.textContent = 'Собираем каталог...';
-            err.className = 'info';
-            err.style.display = 'block';
-            const message = { pluginMessage: { type: 'collect-catalog' } };
-            console.log('[UI] Отправляем сообщение в плагин:', JSON.stringify(message, null, 2));
-            parent.postMessage(message, '*');
-            console.log('[UI] Сообщение отправлено');
-          };
-          console.log('[UI] Обработчик для кнопки collect установлен');
-        } else {
-          console.error('[UI] Кнопка collect не найдена!');
-        }
+      
+      if (collectBtn) {
+        collectBtn.onclick = () => {
+          err.textContent = 'Собираем каталог...';
+          err.className = 'info';
+          err.style.display = 'block';
+          parent.postMessage({ pluginMessage: { type: 'collect-catalog' } }, '*');
+        };
+      }
       } catch (error) {
         console.error('[UI] Ошибка при установке обработчиков кнопок:', error);
       }
@@ -479,13 +440,8 @@
       });
 
       window.addEventListener('message', (e) => {
-        console.log('=== [UI] Получено сообщение от плагина ===');
-        console.log('[UI] Event:', e);
-        console.log('[UI] Event.data:', JSON.stringify(e.data, null, 2));
         const msg = e.data.pluginMessage || {};
-        console.log('[UI] Тип сообщения:', msg.type);
         if (msg.type === 'catalog-result') {
-          console.log('Получен результат каталога, длина:', msg.text?.length || 0);
           catalog.value = msg.text || '';
           // Сохраняем каталог в clientStorage
           parent.postMessage({ pluginMessage: { type: 'save-catalog', text: catalog.value } }, '*');
@@ -496,17 +452,13 @@
             err.className = '';
           }, 2000);
         } else if (msg.type === 'catalog-loaded') {
-          console.log('Загружен сохраненный каталог, длина:', msg.text?.length || 0);
           catalog.value = msg.text || '';
         } else if (msg.type === 'mapping-loaded') {
-          console.log('Загружен сохраненный маппинг, длина:', msg.text?.length || 0);
           mapping.value = msg.text || '';
         } else if (msg.type === 'data-loaded') {
-          console.log('Загружены сохраненные данные');
           if (msg.catalog) catalog.value = msg.catalog;
           if (msg.mapping) mapping.value = msg.mapping;
         } else if (msg.type === 'success') {
-          console.log('Успех:', msg.detail);
           hideLoader();
           err.textContent = msg.detail || 'Успешно выполнено';
           err.className = 'success';
@@ -515,7 +467,6 @@
             err.className = '';
           }, 5000);
         } else if (msg.type === 'warning') {
-          console.warn('Предупреждение:', msg.detail);
           hideLoader();
           err.textContent = msg.detail || 'Предупреждение';
           err.className = 'warning';
@@ -524,7 +475,6 @@
             err.className = '';
           }, 5000);
         } else if (msg.type === 'error') {
-          console.error('Ошибка от плагина:', msg.detail);
           hideLoader();
           err.textContent = msg.detail || 'Ошибка';
           err.className = 'error';
