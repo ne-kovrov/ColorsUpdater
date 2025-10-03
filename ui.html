@@ -25,7 +25,6 @@
     </div>
     <div style="margin-top:20px; display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
       <button id="run">Запустить</button>
-      <button id="cancel">Отмена</button>
       <div id="loader" style="display:none; align-items:center; gap:12px; color:#707a95; font-size:12px; padding:8px 12px; background:#e6f0ff; border-radius:4px; border:1px solid #3686ff; font-family:'Lato',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;">
         <div style="width:16px; height:16px; border:2px solid #e6f0ff; border-top:2px solid #3686ff; border-radius:50%; animation:spin 1s linear infinite;"></div>
         <span>Обрабатываем стили...</span>
@@ -366,7 +365,6 @@
         
         parent.postMessage({ pluginMessage: { type: 'run', mappingCsv: csv, catalogCsvOrJson: cat } }, '*');
       };
-      $('cancel').onclick = () => parent.postMessage({ pluginMessage: { type: 'cancel' } }, '*');
       
       if (collectBtn) {
         collectBtn.onclick = () => {
