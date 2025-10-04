@@ -1,320 +1,457 @@
 <!doctype html>
 <html>
-  <body style="font: var(--text-sm); margin: 12px;">
-    <div style="margin:0 0 16px; padding:12px 16px; background:#e6f0ff; border:1px solid #3686ff; border-radius:4px; font-size:12px; color:#152242; font-family:'Lato',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;">
-      Плагин обрабатывает только текущую открытую страницу
-    </div>
-    <div style="margin:16px 0;">
-      <div style="margin-bottom:12px; padding:12px; background:#e6f0ff; border:1px solid #3686ff; border-radius:4px; color:#152242; font-size:12px; display:flex; align-items:flex-start; gap:8px; font-family:'Lato',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;">
-        <div style="width:16px; height:16px; background:#3686ff; border-radius:50%; flex-shrink:0; margin-top:2px; display:flex; align-items:center; justify-content:center; color:white; font-size:10px; font-weight:bold;">i</div>
-        <div>Сперва запустите плагин в файле библиотеки и нажмите «Собрать каталог…» чтобы собрать актуальные цвета</div>
+  <body style="font-family: 'SF Pro', system-ui, -apple-system, sans-serif; margin: 0; padding: 0; background: #ffffff; color: #152242;">
+    <!-- Основной контейнер -->
+    <div style="width: 329px; min-height: 100vh; position: relative; background: #ffffff; display: flex; flex-direction: column; margin: 0; padding: 0;">
+      
+      <!-- Контентная область с прокруткой -->
+      <div class="content-area" style="flex: 1; padding: 16px; padding-bottom: 108px; overflow-y: auto;">
+        <!-- Секция 1: Соберите каталог переменных -->
+        <div style="width: 100%; margin-bottom: 32px;">
+          <h2 style="font-family: 'SF Pro', sans-serif; font-weight: 500; font-size: 16px; line-height: 24px; color: #0d162e; margin: 0 0 16px 0;">
+            Соберите каталог переменных из файла библиотеки
+          </h2>
+        
+        <!-- Кнопка "Собрать каталог" -->
+        <button id="collect" style="
+          width: 100%;
+          height: 36px;
+          background: #0468ff;
+          border: none;
+          border-radius: 8px;
+          color: white;
+          font-family: 'SF Pro', sans-serif;
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 20px;
+          cursor: pointer;
+          margin-bottom: 8px;
+        ">Собрать каталог из этого файла</button>
+        
+        <!-- Аккордеон для каталога -->
+        <details id="catalog-accordion" style="background: #f3f5fa; border-radius: 8px; padding: 8px 12px;">
+          <summary style="
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            font-family: 'SF Pro', sans-serif;
+            font-size: 14px;
+            line-height: 24px;
+            color: #152242;
+            list-style: none;
+            outline: none;
+          ">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <!-- Индикатор состояния -->
+              <div id="catalog-status-icon" class="status-icon" style="
+                width: 24px;
+                height: 24px;
+                display: none;
+                align-items: center;
+                justify-content: center;
+                background: #34ac0a;
+                border-radius: 50%;
+              ">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M13.5 4.5L6 12L2.5 8.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <span>Каталог переменных</span>
+            </div>
+            <div style="width: 16px; height: 16px; display: flex; align-items: center; justify-content: center;">
+              <svg class="chevron-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M4 6L8 10L12 6" stroke="#707a95" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </summary>
+          <div style="margin-top: 16px;">
+            <textarea id="catalog" placeholder="name,key,id,collection&#10;Color/Primary/500,Var:abc...,1:123,Tokens" style="
+              width: 100%;
+              height: 180px;
+              border: 1px solid #c9d1e5;
+              border-radius: 4px;
+              padding: 8px 12px;
+              font-family: 'SF Pro', sans-serif;
+              font-size: 12px;
+              line-height: 16px;
+              color: #152242;
+              background: #ffffff;
+              resize: vertical;
+              box-sizing: border-box;
+              margin-bottom: 16px;
+            "></textarea>
+            
+            <button id="copy" style="
+              background: #ffffff;
+              border: none;
+              border-radius: 8px;
+              color: #0d162e;
+              font-family: 'SF Pro', sans-serif;
+              font-weight: 500;
+              font-size: 14px;
+              line-height: 20px;
+              padding: 8px 12px;
+              cursor: pointer;
+              width: 100%;
+              height: 36px;
+            ">Копировать</button>
+          </div>
+        </details>
       </div>
-      <details id="catalog-accordion">
-        <summary>Каталог переменных (name,key,id,collection)</summary>
-        <div style="display:flex; gap:8px; margin-bottom:16px;">
-          <button id="copy">Копировать</button>
-          <button id="clear">Очистить</button>
-          <button id="collect">Собрать каталог из этого файла</button>
-        </div>
-        <textarea id="catalog" placeholder="name,key,id,collection&#10;Color/Primary/500,Var:abc...,1:123,Tokens" style="width:100%;height:180px;"></textarea>
-      </details>
-    </div>
-    <div style="margin:16px 0;">
-      <div style="font-family:'Lato',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; font-weight:700; font-size:16px; line-height:24px; letter-spacing:-0.2px; margin-bottom:8px; color:#1f2328;">Маппинг (styleName,variableName[,collectionName])</div>
-      <textarea id="mapping" placeholder="Primary/500,Color/Primary/500&#10;Secondary/300,Color/Secondary/300,Tokens" style="width:100%;height:140px;"></textarea>
-    </div>
-    <div style="margin-top:20px; display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
-      <button id="run">Запустить</button>
-      <div id="loader" style="display:none; align-items:center; gap:12px; color:#707a95; font-size:12px; padding:8px 12px; background:#e6f0ff; border-radius:4px; border:1px solid #3686ff; font-family:'Lato',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;">
-        <div style="width:16px; height:16px; border:2px solid #e6f0ff; border-top:2px solid #3686ff; border-radius:50%; animation:spin 1s linear infinite;"></div>
-        <span>Обрабатываем стили...</span>
+      
+      <!-- Секция 2: Вставьте маппинг -->
+      <div style="width: 100%; margin-bottom: 32px;">
+        <h2 style="font-family: 'SF Pro', sans-serif; font-weight: 500; font-size: 16px; line-height: 24px; color: #0d162e; margin: 0 0 16px 0;">
+          Вставьте маппинг в формате oldStyleName,newVarName
+        </h2>
+        
+        <!-- Аккордеон для маппинга -->
+        <details id="mapping-accordion" style="background: #f3f5fa; border-radius: 8px; padding: 8px 12px;">
+          <summary style="
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            font-family: 'SF Pro', sans-serif;
+            font-size: 14px;
+            line-height: 24px;
+            color: #152242;
+            list-style: none;
+            outline: none;
+          ">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <!-- Индикатор состояния -->
+              <div id="mapping-status-icon" class="status-icon" style="
+                width: 24px;
+                height: 24px;
+                display: none;
+                align-items: center;
+                justify-content: center;
+                background: #34ac0a;
+                border-radius: 50%;
+              ">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M13.5 4.5L6 12L2.5 8.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <span>Маппинг</span>
+            </div>
+            <div style="width: 16px; height: 16px; display: flex; align-items: center; justify-content: center;">
+              <svg class="chevron-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M4 6L8 10L12 6" stroke="#707a95" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </summary>
+          <div style="margin-top: 16px;">
+            <textarea id="mapping" placeholder="Primary/500,Color/Primary/500&#10;Secondary/300,Color/Secondary/300,Tokens" style="
+              width: 100%;
+              height: 140px;
+              border: 1px solid #c9d1e5;
+              border-radius: 4px;
+              padding: 8px 12px;
+              font-family: 'SF Pro', sans-serif;
+              font-size: 12px;
+              line-height: 16px;
+              color: #152242;
+              background: #ffffff;
+              resize: vertical;
+              box-sizing: border-box;
+              margin-bottom: 16px;
+            "></textarea>
+            
+            <button id="clear-mapping" style="
+              background: #ffffff;
+              border: none;
+              border-radius: 8px;
+              color: #0d162e;
+              font-family: 'SF Pro', sans-serif;
+              font-weight: 500;
+              font-size: 14px;
+              line-height: 20px;
+              padding: 8px 12px;
+              cursor: pointer;
+              width: 100%;
+              height: 36px;
+            ">Очистить</button>
+          </div>
+        </details>
       </div>
-    </div>
-    <div id="err" style="margin-top:16px; padding:12px 16px; border-radius:8px; font-size:12px; white-space:pre-wrap; display:none;"></div>
-    <style>
-      :root {
-        --font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-        /* Text styles (match Figma scale approximately) */
-        --text-xs: 11px/16px var(--font-family);
-        --text-sm: 12px/18px var(--font-family);
-        --text-md: 13px/20px var(--font-family);
-        --text-lg: 14px/22px var(--font-family);
-        --text-xl: 16px/24px var(--font-family);
-        /* Headings */
-        --heading-sm-size: 14px;
-        --heading-sm-line: 20px;
-        --heading-weight: 600;
-        /* Colors (kept minimal, UI already uses inline colors) */
-        --text-primary: #1f2328;
-        --text-secondary: #666;
-      }
-
-      body {
-        color: var(--text-primary);
-      }
-      h3 {
-        font-weight: var(--heading-weight);
-        font-size: var(--heading-sm-size);
-        line-height: var(--heading-sm-line);
-        margin: 0 0 8px;
-      }
-      summary {
-        font-weight: var(--heading-weight);
-        font-size: var(--heading-sm-size);
-        line-height: var(--heading-sm-line);
-        color: var(--text-primary);
-      }
-      /* Design System Accordion Styles */
-      #catalog-accordion {
-        border: none;
-        border-bottom: 0.5px solid #c9d1e5;
-        background: transparent;
-        box-shadow: none;
-        overflow: visible;
-        margin: 0;
-        padding: 16px 0;
-      }
       
-      #catalog-accordion > summary {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 0;
-        background: transparent;
-        border: none;
-        cursor: pointer;
-        user-select: none;
-        transition: all 0.2s ease;
-        font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-        font-weight: 700;
-        font-size: 16px;
-        line-height: 24px;
-        letter-spacing: -0.2px;
-        color: #152242;
-        list-style: none;
-        outline: none;
-        width: 100%;
-      }
+      <!-- Нижняя секция с кнопкой запуска - зафиксирована -->
+      <div class="fixed-bottom" style="position: fixed; bottom: 0; left: 0; width: 329px; padding: 16px; border-top: 0.5px solid #d0d8e9; background: #ffffff; z-index: 1000;">
+        <button id="run" style="
+          width: 100%;
+          height: 44px;
+          background: #0468ff;
+          border: none;
+          border-radius: 8px;
+          color: white;
+          font-family: 'SF Pro', sans-serif;
+          font-weight: 500;
+          font-size: 16px;
+          line-height: 22px;
+          cursor: pointer;
+          margin-bottom: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+        ">
+          <svg class="spinner-icon" style="display: none;" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-dasharray="60" stroke-dashoffset="60">
+              <animate attributeName="stroke-dashoffset" values="60;0;60" dur="1s" repeatCount="indefinite"/>
+            </circle>
+          </svg>
+          <span>Обновить стили</span>
+        </button>
+        
+        <p style="
+          font-family: 'SF Pro', sans-serif;
+          font-size: 10px;
+          line-height: 16px;
+          color: #697797;
+          text-align: center;
+          margin: 0;
+        ">Плагин обрабатывает только открытую страницу</p>
+      </div>
       
-      #catalog-accordion > summary:hover {
-        background: transparent;
-        color: #152242;
-      }
       
-      #catalog-accordion > summary::before {
+      <!-- Экран успеха -->
+      <div id="success-screen" style="
         display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(343deg, #34AC0A 35.72%, #CAF1BA 100%);
+        z-index: 2000;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      ">
+        <div style="
+          text-align: center;
+          color: #ffffff;
+          font-family: 'SF Pro', sans-serif;
+        ">
+          <h1 style="
+            font-weight: 500;
+            font-size: 32px;
+            line-height: 40px;
+            margin: 0 0 8px 0;
+            color: #ffffff;
+          ">Готово!</h1>
+          <p style="
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 22px;
+            margin: 0;
+            color: #ffffff;
+          ">Откройте следующую<br>страницу</p>
+        </div>
+      </div>
+      
+      <!-- Сообщения об ошибках/успехе -->
+      <div id="err" style="
+        position: fixed;
+        top: 16px;
+        left: 16px;
+        right: 16px;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-family: 'SF Pro', sans-serif;
+        white-space: pre-wrap;
+        display: none;
+        z-index: 1500;
+      "></div>
+    </div>
+    
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
       }
       
-      #catalog-accordion > summary::after {
-        content: '';
-        width: 16px;
-        height: 16px;
-        background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTQgNkw4IDEwTDEyIDYiIHN0cm9rZT0iIzcwN2E5NSIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8L3N2Zz4K') no-repeat center;
-        background-size: contain;
-        margin-left: auto;
-        transition: transform 0.2s ease;
-        flex-shrink: 0;
+      html, body {
+        width: 329px;
+        height: 100vh;
       }
       
-      #catalog-accordion[open] > summary::after {
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      
+      /* Стили для аккордеонов */
+      details[open] summary .chevron-icon {
         transform: rotate(180deg);
       }
       
-      #catalog-accordion > div {
-        padding: 16px 0 0 0;
-        background: transparent;
-        border: none;
-        margin-top: 16px;
-      }
-      /* Design System Input Styles */
-      textarea, input, select {
-        font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-        font-size: 16px;
-        font-weight: 400;
-        line-height: 24px;
-        background: #ffffff;
-        border: 1px solid #c9d1e5;
-        border-radius: 4px;
-        padding: 8px 12px 4px 12px;
-        transition: all 0.2s ease;
-        resize: vertical;
-        min-height: 52px;
-        color: #152242;
-        width: 100%;
-        box-sizing: border-box;
+      /* Иконка успеха не должна переворачиваться */
+      details[open] summary .status-icon {
+        transform: none;
       }
       
-      textarea:focus, input:focus, select:focus {
+      /* Стили для неактивного состояния */
+      .processing .content-area {
+        opacity: 0.6;
+        pointer-events: none;
+      }
+      
+      /* Фиксированная секция с кнопкой не должна быть приглушена */
+      .processing .fixed-bottom {
+        opacity: 1 !important;
+      }
+      
+      .processing .content-area h2 {
+        color: #b1bad2 !important;
+      }
+      
+      .processing .content-area button:not(#run) {
+        background: #e4e9f6 !important;
+        color: #b8c1d6 !important;
+        cursor: not-allowed !important;
+      }
+      
+      
+      .processing .content-area details {
+        background: #e1e6f4 !important;
+      }
+      
+      .processing .content-area details summary {
+        color: #b1bad2 !important;
+      }
+      
+      .processing .content-area details summary .status-icon {
+        background: #b1bad2 !important;
+      }
+      
+      /* Кнопка "Обновить" остается синей с анимацией */
+      .processing #run {
+        background: #0468ff !important;
+        color: #ffffff !important;
+        cursor: not-allowed !important;
+        position: relative;
+        justify-content: flex-start;
+        padding-left: 14px;
+        padding-right: 14px;
+        opacity: 1 !important;
+      }
+      
+      .processing #run .spinner-icon {
+        display: block;
+        width: 16px;
+        height: 16px;
+        animation: spin 1s linear infinite;
+      }
+      
+      .processing #run span {
+        margin-left: 6px;
+      }
+      
+      details summary::-webkit-details-marker {
+        display: none;
+      }
+      
+      
+      /* Стили для кнопок при наведении */
+      button:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+        transition: all 0.2s ease;
+      }
+      
+      button:active {
+        transform: translateY(0);
+      }
+      
+      /* Стили для textarea при фокусе */
+      textarea:focus {
         outline: none;
         border-color: #3686ff;
         box-shadow: 0 0 0 1px #3686ff;
       }
       
-      textarea:hover, input:hover, select:hover {
-        border-color: #c9d1e5;
-      }
-      
-      textarea::placeholder, input::placeholder {
-        color: #b8c1d6;
-        font-weight: 400;
-        font-size: 16px;
-        line-height: 24px;
-      }
-      
-      textarea:disabled, input:disabled, select:disabled {
-        background: #e4e9f6;
-        border-color: #e4e9f6;
-        color: #b8c1d6;
-      }
-      
-      textarea:disabled::placeholder, input:disabled::placeholder {
-        color: #b8c1d6;
-      }
-      
-      /* Figma Button Styles - XS Size */
-      button {
-        font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-        font-weight: 700;
-        font-size: 12px;
-        line-height: 16px;
-        letter-spacing: -0.2px;
-        padding: 6px 12px;
-        border-radius: 6px;
-        border: none;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 4px;
-        min-height: 28px;
-        text-decoration: none;
-        position: relative;
-        overflow: hidden;
-        white-space: nowrap;
-      }
-      
-      /* Primary Button (from Figma) */
-      button#run {
-        background: #0468ff;
-        color: #ffffff;
-      }
-      
-      button#run:hover:not(:disabled) {
-        background: #0661ec;
-      }
-      
-      button#run:active {
-        background: #075ad9;
-      }
-      
-      button#run:disabled {
-        background: #e4e9f6;
-        color: #b8c1d6;
-        cursor: not-allowed;
-        transform: none;
-        box-shadow: none;
-      }
-      
-      /* Secondary Buttons (from Figma) */
-      button#cancel, button#copy, button#clear, button#collect {
-        background: #e6f0ff;
-        color: #0661ec;
-      }
-      
-      button#cancel:hover:not(:disabled), button#copy:hover:not(:disabled), button#clear:hover:not(:disabled), button#collect:hover:not(:disabled) {
-        background: #d1e7ff;
-      }
-      
-      button#cancel:active, button#copy:active, button#clear:active, button#collect:active {
-        background: #b8d4ff;
-      }
-      
-      button#cancel:disabled, button#copy:disabled, button#clear:disabled, button#collect:disabled {
-        background: #e4e9f6;
-        color: #b8c1d6;
-        cursor: not-allowed;
-      }
-      
-      /* Focus states for all buttons */
-      button:focus {
-        outline: none;
-        box-shadow: 0 0 0 2px #3686ff;
-      }
-      
-      button:focus:not(:disabled) {
-        box-shadow: 0 0 0 2px #3686ff;
-      }
-      
-      /* Error Message Styles */
-      #err {
-        display: none;
-        margin-top: 16px;
-        padding: 12px 16px;
-        border-radius: 8px;
-        font-size: 12px;
-        white-space: pre-wrap;
-        border: 1px solid;
-      }
-      
+      /* Стили для сообщений */
       #err.error {
         display: block;
         background: #fef2f2;
-        border-color: #fecaca;
+        border: 1px solid #fecaca;
         color: #dc2626;
       }
       
       #err.success {
         display: block;
         background: #f0fdf4;
-        border-color: #bbf7d0;
+        border: 1px solid #bbf7d0;
         color: #16a34a;
       }
       
       #err.warning {
         display: block;
         background: #fffbeb;
-        border-color: #fed7aa;
+        border: 1px solid #fed7aa;
         color: #ea580c;
       }
       
       #err.info {
         display: block;
         background: #e6f0ff;
-        border-color: #3686ff;
+        border: 1px solid #3686ff;
         color: #152242;
       }
-      small, .hint, .muted {
-        font: var(--text-xs);
-        color: var(--text-secondary);
-      }
-      @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
     </style>
+    
     <script>
       const $ = (id) => document.getElementById(id);
       const mapping = $('mapping');
       const catalog = $('catalog');
       const err = $('err');
-      const loader = $('loader');
       const runBtn = $('run');
+      const successScreen = $('success-screen');
       const catalogAccordion = $('catalog-accordion');
+      const mappingAccordion = $('mapping-accordion');
       const collectBtn = $('collect');
+      const catalogStatusIcon = $('catalog-status-icon');
+      const mappingStatusIcon = $('mapping-status-icon');
       
-      // Управление состоянием аккордеона
+      // Функции для обновления индикаторов состояния
+      function updateStatusIndicators() {
+        // Показываем индикатор каталога, если есть данные
+        if (catalog.value.trim()) {
+          catalogStatusIcon.style.display = 'flex';
+        } else {
+          catalogStatusIcon.style.display = 'none';
+        }
+        
+        // Показываем индикатор маппинга, если есть данные
+        if (mapping.value.trim()) {
+          mappingStatusIcon.style.display = 'flex';
+        } else {
+          mappingStatusIcon.style.display = 'none';
+        }
+      }
+      
+      // Управление состоянием аккордеонов
       function initAccordionState() {
         try {
-          // Проверяем, есть ли сохраненное состояние
-          const savedState = localStorage.getItem('catalog-accordion-open');
+          const catalogState = localStorage.getItem('catalog-accordion-open');
+          const mappingState = localStorage.getItem('mapping-accordion-open');
           
-          if (savedState === null) {
-            // Первый запуск - открываем аккордеон
-            catalogAccordion.open = true;
+          if (catalogState === null) {
+            catalogAccordion.open = false; // Закрыт по умолчанию
           } else {
-            // Восстанавливаем сохраненное состояние
-            catalogAccordion.open = savedState === 'true';
+            catalogAccordion.open = catalogState === 'true';
+          }
+          
+          if (mappingState === null) {
+            mappingAccordion.open = true; // Открыт по умолчанию
+          } else {
+            mappingAccordion.open = mappingState === 'true';
           }
         } catch (error) {
           console.error('[UI] Ошибка в initAccordionState:', error);
@@ -323,11 +460,17 @@
       
       function saveAccordionState() {
         localStorage.setItem('catalog-accordion-open', catalogAccordion.open.toString());
+        localStorage.setItem('mapping-accordion-open', mappingAccordion.open.toString());
       }
       
-      // Инициализируем состояние аккордеона
+      // Инициализируем состояние аккордеонов
       try {
+        // Сбрасываем состояние аккордеонов для тестирования
+        localStorage.removeItem('catalog-accordion-open');
+        localStorage.removeItem('mapping-accordion-open');
+        
         initAccordionState();
+        updateStatusIndicators(); // Обновляем индикаторы при загрузке
       } catch (error) {
         console.error('[UI] Ошибка при выполнении initAccordionState:', error);
       }
@@ -335,106 +478,174 @@
       // Сохраняем состояние при изменении
       try {
         catalogAccordion.addEventListener('toggle', saveAccordionState);
+        mappingAccordion.addEventListener('toggle', saveAccordionState);
       } catch (error) {
-        console.error('[UI] Ошибка при добавлении обработчика toggle:', error);
+        console.error('[UI] Ошибка при добавлении обработчиков toggle:', error);
       }
       
-      // Функция для скрытия лоадера
-      function hideLoader() {
-        loader.style.display = 'none';
+      // Функция для скрытия процессного состояния
+      function hideProcessingState() {
+        document.body.classList.remove('processing');
         runBtn.disabled = false;
-        runBtn.textContent = 'Запустить';
+        runBtn.querySelector('span').textContent = 'Обновить стили';
+        runBtn.querySelector('.spinner-icon').style.display = 'none';
+      }
+      
+      // Функция для показа процессного состояния
+      function showProcessingState() {
+        document.body.classList.add('processing');
+        runBtn.disabled = true;
+        runBtn.querySelector('span').textContent = 'Обновляю стили...';
+        runBtn.querySelector('.spinner-icon').style.display = 'block';
+      }
+      
+      // Функция для показа экрана успеха
+      function showSuccessScreen() {
+        successScreen.style.display = 'flex';
+        document.body.classList.remove('processing');
+      }
+      
+      // Функция для скрытия экрана успеха
+      function hideSuccessScreen() {
+        successScreen.style.display = 'none';
+      }
+      
+      // Функция для сброса к начальному состоянию
+      function resetToInitialState() {
+        hideSuccessScreen();
+        hideProcessingState();
+        err.textContent = '';
+        err.className = '';
+        // Не очищаем catalog и mapping - они должны оставаться заполненными
+        updateStatusIndicators();
       }
       
       // Устанавливаем обработчики кнопок
       try {
         $('run').onclick = () => {
-        err.textContent = '';
-        const csv = mapping.value || '';
-        const cat = catalog.value || '';
-        if (!csv.trim()) {
-          err.textContent = 'Вставьте CSV маппинга (styleName,variableName[,collectionName]).';
-          err.className = 'error';
-          return;
-        }
-        
-        // Показываем лоадер и блокируем кнопку
-        loader.style.display = 'flex';
-        runBtn.disabled = true;
-        runBtn.textContent = 'Обрабатываем...';
-        
-        parent.postMessage({ pluginMessage: { type: 'run', mappingCsv: csv, catalogCsvOrJson: cat } }, '*');
-      };
-      
-      if (collectBtn) {
-        collectBtn.onclick = () => {
-          err.textContent = 'Собираем каталог...';
-          err.className = 'info';
-          err.style.display = 'block';
-          parent.postMessage({ pluginMessage: { type: 'collect-catalog' } }, '*');
+          err.textContent = '';
+          const csv = mapping.value || '';
+          const cat = catalog.value || '';
+          if (!csv.trim()) {
+            err.textContent = 'Вставьте CSV маппинга (styleName,variableName[,collectionName]).';
+            err.className = 'error';
+            return;
+          }
+          
+          // Показываем процессное состояние
+          showProcessingState();
+          
+          parent.postMessage({ pluginMessage: { type: 'run', mappingCsv: csv, catalogCsvOrJson: cat } }, '*');
         };
-      }
-      } catch (error) {
-        console.error('[UI] Ошибка при установке обработчиков кнопок:', error);
-      }
-      $('copy').onclick = () => {
-        const catalogText = catalog.value;
-        if (!catalogText.trim()) {
-          err.textContent = 'Каталог пуст. Сначала соберите каталог или вставьте данные.';
-          err.className = 'error';
-          return;
+        
+        if (collectBtn) {
+          collectBtn.onclick = () => {
+            err.textContent = 'Собираем каталог...';
+            err.className = 'info';
+            err.style.display = 'block';
+            parent.postMessage({ pluginMessage: { type: 'collect-catalog' } }, '*');
+          };
         }
-        try {
-          // Выделяем текст в textarea
-          catalog.select();
-          catalog.setSelectionRange(0, catalogText.length);
-          
-          // Пытаемся скопировать через execCommand
-          const success = document.execCommand('copy');
-          
-          if (success) {
-            err.textContent = 'Каталог скопирован в буфер обмена!';
-            err.className = 'success';
-            setTimeout(() => {
-              err.textContent = '';
-              err.className = '';
-            }, 2000);
-          } else {
-            // Fallback: показываем текст для ручного копирования
-            err.textContent = 'Автокопирование недоступно. Выделите и скопируйте текст вручную (Ctrl+C).';
+        
+        
+        $('copy').onclick = () => {
+          const catalogText = catalog.value;
+          if (!catalogText.trim()) {
+            err.textContent = 'Каталог пуст. Сначала соберите каталог или вставьте данные.';
+            err.className = 'error';
+            return;
+          }
+          try {
+            catalog.select();
+            catalog.setSelectionRange(0, catalogText.length);
+            const success = document.execCommand('copy');
+            
+            if (success) {
+              err.textContent = 'Каталог скопирован в буфер обмена!';
+              err.className = 'success';
+              setTimeout(() => {
+                err.textContent = '';
+                err.className = '';
+              }, 2000);
+            } else {
+              err.textContent = 'Автокопирование недоступно. Выделите и скопируйте текст вручную (Ctrl+C).';
+              err.className = 'error';
+              catalog.focus();
+              catalog.select();
+            }
+          } catch (e) {
+            err.textContent = 'Не удалось скопировать. Выделите и скопируйте текст вручную (Ctrl+C).';
             err.className = 'error';
             catalog.focus();
             catalog.select();
           }
-        } catch (e) {
-          err.textContent = 'Не удалось скопировать. Выделите и скопируйте текст вручную (Ctrl+C).';
-          err.className = 'error';
-          catalog.focus();
-          catalog.select();
-        }
-      };
-      $('clear').onclick = () => {
-        catalog.value = '';
-        mapping.value = '';
-        parent.postMessage({ pluginMessage: { type: 'clear-data' } }, '*');
-        err.textContent = 'Данные очищены.';
-        err.className = 'success';
-        setTimeout(() => {
-          err.textContent = '';
-          err.className = '';
-        }, 2000);
-      };
+        };
+        
+        $('clear-mapping').onclick = () => {
+          mapping.value = '';
+          updateStatusIndicators(); // Обновляем индикаторы
+          err.textContent = 'Поле маппинга очищено';
+          err.className = 'success';
+          setTimeout(() => {
+            err.textContent = '';
+            err.className = '';
+          }, 2000);
+        };
+        
+        
+      } catch (error) {
+        console.error('[UI] Ошибка при установке обработчиков кнопок:', error);
+      }
+      
       // Загружаем сохраненные данные при запуске
       parent.postMessage({ pluginMessage: { type: 'load-data' } }, '*');
 
       // Автоматически сохраняем каталог при редактировании
       catalog.addEventListener('input', () => {
         parent.postMessage({ pluginMessage: { type: 'save-catalog', text: catalog.value } }, '*');
+        updateStatusIndicators(); // Обновляем индикаторы при изменении
       });
 
       // Автоматически сохраняем маппинг при редактировании
       mapping.addEventListener('input', () => {
+        // Проверяем и удаляем кавычки при любом изменении текста
+        let text = mapping.value;
+        let cleanedText = text.trim();
+        if ((cleanedText.startsWith('"') && cleanedText.endsWith('"')) || 
+            (cleanedText.startsWith("'") && cleanedText.endsWith("'"))) {
+          cleanedText = cleanedText.slice(1, -1);
+          mapping.value = cleanedText;
+          err.textContent = 'Кавычки автоматически удалены';
+          err.className = 'info';
+          setTimeout(() => {
+            err.textContent = '';
+            err.className = '';
+          }, 2000);
+        }
+        
         parent.postMessage({ pluginMessage: { type: 'save-mapping', text: mapping.value } }, '*');
+        updateStatusIndicators(); // Обновляем индикаторы при изменении
+      });
+
+      // Обработчик для вставки через Ctrl+V в поле маппинга
+      mapping.addEventListener('paste', (e) => {
+        setTimeout(() => {
+          let text = mapping.value;
+          // Убираем кавычки в начале и конце, если они есть
+          let cleanedText = text.trim();
+          if ((cleanedText.startsWith('"') && cleanedText.endsWith('"')) || 
+              (cleanedText.startsWith("'") && cleanedText.endsWith("'"))) {
+            cleanedText = cleanedText.slice(1, -1);
+            mapping.value = cleanedText;
+            updateStatusIndicators();
+            err.textContent = 'Кавычки автоматически удалены';
+            err.className = 'info';
+            setTimeout(() => {
+              err.textContent = '';
+              err.className = '';
+            }, 2000);
+          }
+        }, 10);
       });
 
       window.addEventListener('message', (e) => {
@@ -443,6 +654,7 @@
           catalog.value = msg.text || '';
           // Сохраняем каталог в clientStorage
           parent.postMessage({ pluginMessage: { type: 'save-catalog', text: catalog.value } }, '*');
+          updateStatusIndicators(); // Обновляем индикаторы
           err.textContent = 'Каталог собран успешно!';
           err.className = 'success';
           setTimeout(() => {
@@ -451,21 +663,19 @@
           }, 2000);
         } else if (msg.type === 'catalog-loaded') {
           catalog.value = msg.text || '';
+          updateStatusIndicators(); // Обновляем индикаторы
         } else if (msg.type === 'mapping-loaded') {
           mapping.value = msg.text || '';
+          updateStatusIndicators(); // Обновляем индикаторы
         } else if (msg.type === 'data-loaded') {
           if (msg.catalog) catalog.value = msg.catalog;
           if (msg.mapping) mapping.value = msg.mapping;
+          updateStatusIndicators(); // Обновляем индикаторы
         } else if (msg.type === 'success') {
-          hideLoader();
-          err.textContent = msg.detail || 'Успешно выполнено';
-          err.className = 'success';
-          setTimeout(() => {
-            err.textContent = '';
-            err.className = '';
-          }, 5000);
+          hideProcessingState();
+          showSuccessScreen();
         } else if (msg.type === 'warning') {
-          hideLoader();
+          hideProcessingState();
           err.textContent = msg.detail || 'Предупреждение';
           err.className = 'warning';
           setTimeout(() => {
@@ -473,9 +683,11 @@
             err.className = '';
           }, 5000);
         } else if (msg.type === 'error') {
-          hideLoader();
+          hideProcessingState();
           err.textContent = msg.detail || 'Ошибка';
           err.className = 'error';
+        } else if (msg.type === 'page-changed') {
+          resetToInitialState();
         }
       });
     </script>
